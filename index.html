@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>七星潭尋寶任務</title>
+    
+    <!-- PWA 必備：載入 Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284C7">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #F0F9FF; }
+        /* 讓 Iframe 填滿整個畫面，看起來就像原生 App */
+        iframe { width: 100%; height: 100%; border: none; }
+        #install-banner { position: fixed; bottom: 0; left: 0; width: 100%; background: #0C4A6E; color: white; padding: 15px; text-align: center; display: none; z-index: 9999; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); }
+        #install-btn { background: white; color: #0C4A6E; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; margin-left: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- ⚠️ 關鍵：這裡替換成你的 Google Apps Script 網址 -->
+    <iframe src="YOUR_APPS_SCRIPT_URL_HERE"></iframe>
+
+    <div id="install-banner">
+        <span>把任務包安裝到桌面吧！</span>
+        <button id="install-btn">安裝 App</button>
+    </div>
+
+    <script>
+        // 註冊 Service Worker (PWA 核心)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    console.log('SW 註冊成功', reg.scope);
+                }).catch(err => {
+                    console.log('SW 註冊失敗', err);
+                });
+            });
+        }
+
+        // 處理「加到主畫面」的安裝提示
+        let deferredPrompt;
+        const installBanner = document.getElementById('install-banner');
+        const installBtn = document.getElementById('install-btn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBanner.style.display = 'block'; // 顯示我們自訂的安裝橫幅
+        });
+
+        installBtn.addEventListener('click', async () => {
+            installBanner.style.display = 'none';
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`安裝結果: ${outcome}`);
+            deferredPrompt = null;
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installBanner.style.display = 'none';
+            console.log('PWA 已成功安裝');
+        });
+    </script>
+</body>
+</html>
