@@ -1,0 +1,21 @@
+{
+  "name": "七星潭尋寶任務",
+  "short_name": "七星潭尋寶",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F0F9FF",
+  "theme_color": "#0284C7",
+  "description": "探索七星潭社區的互動式戶外教學任務包",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
